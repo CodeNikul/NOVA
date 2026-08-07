@@ -1,4 +1,4 @@
-const socket = io();
+const socket = io(https://nova-9x0g.onrender.com);
 
 let username = "";
 
