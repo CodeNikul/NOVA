@@ -4,12 +4,18 @@ const { Server } = require("socket.io");
 const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
+const cors = require("cors");
 
 const app = express();
 
 const server = http.createServer(app);
 
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "https://codenikul.github.io",
+        methods: ["GET", "POST"]
+    }
+});
 
 
 app.use(express.json());
