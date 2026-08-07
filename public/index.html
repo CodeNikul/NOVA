@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Nova Chat</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+<body>
+
+
+<!-- ================================= -->
+<!-- AUTH -->
+<!-- ================================= -->
+
+<div
+    class="auth-screen"
+    id="authScreen"
+>
+
+    <div class="auth-box">
+
+        <div class="nova-symbol">
+            ✦
+        </div>
+
+        <h1>NOVA</h1>
+
+        <p class="subtitle">
+            PRIVATE CHAT NETWORK
+        </p>
+
+
+        <div id="loginForm">
+
+            <h2>Welcome back</h2>
+
+            <input
+                id="loginUsername"
+                type="text"
+                placeholder="Username"
+                autocomplete="username"
+            >
+
+            <input
+                id="loginPassword"
+                type="password"
+                placeholder="Password"
+                autocomplete="current-password"
+            >
+
+            <button id="loginButton">
+                LOGIN
+            </button>
+
+            <p
+                class="switch-text"
+                id="showRegister"
+            >
+                New to Nova?
+                <span>Create account</span>
+            </p>
+
+        </div>
+
+
+        <div
+            id="registerForm"
+            class="hidden"
+        >
+
+            <h2>Create account</h2>
+
+            <input
+                id="registerUsername"
+                type="text"
+                placeholder="Choose username"
+                maxlength="20"
+            >
+
+            <input
+                id="registerPassword"
+                type="password"
+                placeholder="Create password"
+            >
+
+            <input
+                id="registerCode"
+                type="password"
+                placeholder="Nova Code"
+            >
+
+            <button id="registerButton">
+                CREATE ACCOUNT
+            </button>
+
+            <p
+                class="switch-text"
+                id="showLogin"
+            >
+                Already have an account?
+                <span>Login</span>
+            </p>
+
+        </div>
+
+
+        <p
+            class="auth-message"
+            id="authMessage"
+        ></p>
+
+    </div>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- CHAT -->
+<!-- ================================= -->
+
+<div
+    class="app hidden"
+    id="chatApp"
+>
+
+
+    <aside class="sidebar">
+
+        <h1>NOVA</h1>
+
+
+        <div class="channel active">
+            😊 general
+        </div>
+
+        <div class="channel">
+            🎮 gaming
+        </div>
+
+        <div class="channel">
+            📁 projects
+        </div>
+
+
+        <div class="people-title">
+            ONLINE NOW
+        </div>
+
+        <div id="onlineUsers"></div>
+
+
+        <!-- ADMIN BUTTON -->
+
+        <button
+            id="adminButton"
+            class="admin-button hidden"
+        >
+            ⚙ ADMIN PANEL
+        </button>
+
+    </aside>
+
+
+    <main class="chat">
+
+
+        <header class="chat-header">
+
+            <div>
+
+                <h2>
+                    # general
+                </h2>
+
+                <span>
+                    Private network
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <section
+            class="messages"
+            id="messages"
+        >
+
+            <div class="welcome">
+
+                <h1>
+                    Welcome to Nova
+                </h1>
+
+                <p>
+                    Your private chat starts here.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <footer class="composer">
+
+            <input
+                id="messageInput"
+                type="text"
+                placeholder="Message #general"
+                autocomplete="off"
+            >
+
+            <button
+                id="sendButton"
+                type="button"
+            >
+                ➤
+            </button>
+
+        </footer>
+
+
+    </main>
+
+</div>
+
+
+<!-- ================================= -->
+<!-- ADMIN PANEL -->
+<!-- ================================= -->
+
+<div
+    class="admin-overlay hidden"
+    id="adminPanel"
+>
+
+    <div class="admin-window">
+
+
+        <div class="admin-header">
+
+            <div>
+
+                <h1>
+                    NOVA ADMIN
+                </h1>
+
+                <span>
+                    Moderation Control Center
+                </span>
+
+            </div>
+
+
+            <button
+                id="closeAdmin"
+                class="close-admin"
+            >
+                ✕
+            </button>
+
+        </div>
+
+
+        <div class="admin-stats">
+
+            <div class="stat-card">
+
+                <span>USERS</span>
+
+                <strong id="statUsers">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>ONLINE</span>
+
+                <strong id="statOnline">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <span>MESSAGES</span>
+
+                <strong id="statMessages">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <section class="admin-section">
+
+            <h2>
+                Users
+            </h2>
+
+            <div id="adminUsers"></div>
+
+        </section>
+
+
+        <section class="admin-section">
+
+            <h2>
+                Recent Admin Activity
+            </h2>
+
+            <div id="adminLogs"></div>
+
+        </section>
+
+
+        <section class="admin-section danger-section">
+
+            <h2>
+                Danger Zone
+            </h2>
+
+            <button
+                id="clearChatButton"
+                class="danger-button"
+            >
+                CLEAR ALL CHAT HISTORY
+            </button>
+
+        </section>
+
+
+    </div>
+
+</div>
+
+
+<script src="/socket.io/socket.io.js"></script>
+
+<script src="app.js"></script>
+
+</body>
+
+</html>

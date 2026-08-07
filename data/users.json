@@ -1,0 +1,16 @@
+[
+  {
+    "username": "Nikul Tyagi",
+    "password": "6fc0552752984509ecf0f831b35fa1f1:b47cb84a4b98f77046c26153fcb05effe9ef5ee649d326311282cbe39e31bee47d1910584705518f5bee257a73c4201ff876a268fe22f8a2e983b8fed6ba692f",
+    "role": "user",
+    "bannedUntil": null,
+    "createdAt": "2026-08-07T10:52:00.204Z"
+  },
+  {
+    "username": "ADMIN",
+    "password": "34889ee091ffcf88c292915cbdf9d3af:d7cd56f08f25cc6793380c0c3d418c2e3e630503b92376f465271aa69549f9effe3735e10e27ac30c39ee555966611726fb5f2e110aa3da02ef5d25d0118db99",
+    "role": "admin",
+    "bannedUntil": null,
+    "createdAt": "2026-08-07T10:53:29.989Z"
+  }
+]
