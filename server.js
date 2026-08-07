@@ -27,7 +27,7 @@ app.use(express.static("public"));
 // SETTINGS
 // ========================================
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const ADMIN_USERNAME = "ADMIN";
 
