@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE FINAL UPDATE - EVE AI Voiceover Agent</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Animated Emoji Face Styles */
+        .emoji-avatar {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes speak-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        @keyframes subtle-float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .animate-speaking {
+            animation: speak-pulse 0.4s infinite ease-in-out;
+        }
+
+        .animate-float {
+            animation: subtle-float 3s infinite ease-in-out;
+        }
+
+        /* Active Line Highlight styling */
+        .dialogue-card {
+            transition: all 0.25s ease-in-out;
+        }
+
+        .dialogue-card-active {
+            background-color: #ffffff !important;
+            border-color: #3b82f6 !important;
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15), 0 8px 10px -6px rgba(59, 130, 246, 0.1) !important;
+            transform: translateY(-2px);
+        }
+
+        /* Custom Scrollbar for Script List */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-slate-50 flex flex-col justify-between selection:bg-blue-500 selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 shadow-sm">
+                    <i data-lucide="bot" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-900 text-lg sm:text-xl tracking-tight flex items-center gap-2">
+                        EVE AI AGENT
+                        <span class="text-[10px] font-mono uppercase bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">HUMANIZED VOICEOVER</span>
+                    </h1>
+                    <p class="text-xs text-slate-500 font-medium">Film: <span class="text-slate-800 font-semibold">THE FINAL UPDATE</span></p>
+                </div>
+            </div>
+
+            <!-- Master Action Controls -->
+            <div class="flex items-center gap-2">
+                <button id="masterPlayBtn" onclick="playAllScript()" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs uppercase tracking-wider transition-all shadow-md shadow-blue-500/20 active:scale-95">
+                    <i data-lucide="play" class="w-4 h-4 fill-current"></i>
+                    <span>Play Full Script</span>
+                </button>
+                <button id="masterPauseBtn" onclick="pauseSpeech()" class="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 font-semibold text-xs uppercase tracking-wider transition-all active:scale-95">
+                    <i data-lucide="pause" class="w-4 h-4"></i>
+                    <span class="hidden sm:inline">Pause</span>
+                </button>
+                <button id="masterStopBtn" onclick="stopSpeech()" class="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 font-semibold text-xs uppercase tracking-wider transition-all active:scale-95">
+                    <i data-lucide="square" class="w-4 h-4 fill-current"></i>
+                    <span class="hidden sm:inline">Stop</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow grid grid-cols-1 lg:grid-cols-12 gap-6 w-full">
+
+        <!-- Top Browser Pro-Tip Banner -->
+        <div class="lg:col-span-12 bg-amber-50/90 border border-amber-200/80 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-900 shadow-sm">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-amber-100 rounded-xl text-amber-700 shrink-0">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </div>
+                <div class="text-xs">
+                    <span class="font-bold text-amber-950 block text-sm">💡 How to get ultra-realistic human voices:</span>
+                    For best human quality, use <strong class="underline decoration-amber-400">Microsoft Edge</strong> (Microsoft Natural Online Voices e.g., <i>Jenny / Aria</i>) or <strong class="underline decoration-amber-400">Google Chrome</strong> (Google US English Neural).
+                </div>
+            </div>
+            <span class="text-[11px] font-mono bg-white border border-amber-200 px-2.5 py-1 rounded-lg text-amber-800 font-medium shrink-0">
+                Neural Speech Mode Enabled
+            </span>
+        </div>
+
+        <!-- Left Column: AI Face Avatar & Voice Config (5 Cols) -->
+        <section class="lg:col-span-5 flex flex-col gap-6">
+            
+            <!-- AI Avatar & Speech Display Card -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex flex-col items-center text-center relative overflow-hidden">
+                <div class="w-full flex justify-between items-center text-xs font-mono text-slate-400 mb-2">
+                    <span id="statusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-semibold text-[11px]">
+                        <span id="statusDot" class="w-2 h-2 rounded-full bg-slate-400"></span>
+                        <span id="statusText">READY</span>
+                    </span>
+                    <span id="neuralBadge" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full text-[10px] font-bold">✨ HUMANIZED</span>
+                </div>
+
+                <!-- Dynamic Animated Emoji Face Container -->
+                <div class="my-5 relative flex items-center justify-center">
+                    <div id="avatarBg" class="w-36 h-36 rounded-full bg-slate-100 border-4 border-slate-200 flex items-center justify-center shadow-inner transition-all duration-300">
+                        <span id="emojiFace" class="text-7xl select-none emoji-avatar animate-float">👩‍💼</span>
+                    </div>
+                    <!-- Audio Wave Sound Rings -->
+                    <div id="soundRing1" class="absolute inset-0 rounded-full border-2 border-blue-400/30 scale-125 opacity-0 transition-all duration-300 pointer-events-none"></div>
+                    <div id="soundRing2" class="absolute inset-0 rounded-full border-2 border-purple-400/20 scale-150 opacity-0 transition-all duration-500 pointer-events-none"></div>
+                </div>
+
+                <!-- Subtitle Box -->
+                <div class="w-full bg-slate-50 rounded-2xl p-4 border border-slate-200 min-h-[95px] flex flex-col justify-center items-center">
+                    <span id="speakerTag" class="text-[10px] font-mono uppercase tracking-widest text-blue-600 font-bold mb-1">EVE SYSTEM STANDBY</span>
+                    <p id="liveSubtitleText" class="text-slate-600 text-sm italic font-medium leading-relaxed">
+                        "Ready to synthesize script with natural human phrasing. Select a line to listen."
+                    </p>
+                </div>
+            </div>
+
+            <!-- Voice Controls Panel -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-5">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                    <h2 class="font-bold text-slate-900 text-sm uppercase tracking-wide flex items-center gap-2">
+                        <i data-lucide="sliders" class="w-4 h-4 text-blue-600"></i>
+                        Human Voice Engine
+                    </h2>
+                    <button onclick="resetVoiceSettings()" class="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors">
+                        Reset Defaults
+                    </button>
+                </div>
+
+                <!-- Voice Delivery Presets -->
+                <div class="space-y-1.5">
+                    <label class="text-xs font-semibold text-slate-700">Voice Persona Preset</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="applyPreset('studio')" class="px-2.5 py-1.5 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 text-xs font-semibold hover:bg-blue-100 transition-colors">
+                            🎙️ Natural Studio
+                        </button>
+                        <button onclick="applyPreset('warm')" class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-xs font-semibold hover:bg-slate-100 transition-colors">
+                            🌸 Warm Human
+                        </button>
+                        <button onclick="applyPreset('narrator')" class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-xs font-semibold hover:bg-slate-100 transition-colors">
+                            📖 Film Narrator
+                        </button>
+                        <button onclick="applyPreset('robotic')" class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-xs font-semibold hover:bg-slate-100 transition-colors">
+                            🤖 Classic AI
+                        </button>
+                    </div>
+                </div>
+
+                <!-- English Voice Selector -->
+                <div class="space-y-1.5">
+                    <label for="voiceSelect" class="text-xs font-semibold text-slate-700 flex justify-between">
+                        <span>Select Voice (Ranked by Naturalness)</span>
+                        <span id="voiceCount" class="text-slate-400 font-mono text-[11px]">Scanning...</span>
+                    </label>
+                    <div class="relative">
+                        <select id="voiceSelect" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-xs rounded-xl p-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition-all appearance-none pr-9 font-medium">
+                            <option value="">Searching system for natural neural voices...</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3 top-3.5 pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <!-- Humanization Audio Softener Filter Toggle -->
+                <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-blue-600"></i>
+                        <div>
+                            <span class="text-xs font-semibold text-slate-800 block">Soft Tone Warmth Filter</span>
+                            <span class="text-[10px] text-slate-500">Softens harsh high frequencies & mechanical tones</span>
+                        </div>
+                    </div>
+                    <input type="checkbox" id="humanFilterToggle" checked class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+                </div>
+
+                <!-- Speed Control -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center text-xs font-semibold text-slate-700">
+                        <label for="rateInput" class="flex items-center gap-1.5">
+                            <i data-lucide="gauge" class="w-3.5 h-3.5 text-slate-400"></i>
+                            Natural Pace (Rate)
+                        </label>
+                        <span id="rateValue" class="font-mono text-blue-600">0.95x</span>
+                    </div>
+                    <input type="range" id="rateInput" min="0.6" max="1.3" step="0.02" value="0.95" 
+                           class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                </div>
+
+                <!-- Pitch Control -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center text-xs font-semibold text-slate-700">
+                        <label for="pitchInput" class="flex items-center gap-1.5">
+                            <i data-lucide="activity" class="w-3.5 h-3.5 text-slate-400"></i>
+                            Vocal Pitch Warmth
+                        </label>
+                        <span id="pitchValue" class="font-mono text-blue-600">1.00</span>
+                    </div>
+                    <input type="range" id="pitchInput" min="0.7" max="1.3" step="0.02" value="1.00" 
+                           class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                </div>
+
+                <!-- Volume Control -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center text-xs font-semibold text-slate-700">
+                        <label for="volumeInput" class="flex items-center gap-1.5">
+                            <i data-lucide="volume-2" class="w-3.5 h-3.5 text-slate-400"></i>
+                            Output Volume
+                        </label>
+                        <span id="volumeValue" class="font-mono text-blue-600">100%</span>
+                    </div>
+                    <input type="range" id="volumeInput" min="0.1" max="1.0" step="0.05" value="1.0" 
+                           class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600">
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Column: Interactive Screenplay Script (7 Cols) -->
+        <section class="lg:col-span-7 flex flex-col gap-6">
+            
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex flex-col flex-grow">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
+                    <div>
+                        <h2 class="font-bold text-slate-900 text-base flex items-center gap-2">
+                            <i data-lucide="file-text" class="w-5 h-5 text-blue-600"></i>
+                            EVE Voiceover Screenplay
+                        </h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Natural voice punctuation pauses and digital chime logic integrated.</p>
+                    </div>
+                    <span id="progressIndicator" class="text-xs font-mono font-semibold bg-slate-100 text-slate-600 px-3 py-1 rounded-full border border-slate-200">
+                        12 Lines Loaded
+                    </span>
+                </div>
+
+                <!-- Dialogue Lines List -->
+                <div id="scriptContainer" class="space-y-6 overflow-y-auto max-h-[660px] pr-2">
+                    <!-- Dynamic rendering via JS -->
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-8">
+        <div class="max-w-6xl mx-auto px-4 text-center text-xs text-slate-500 font-medium">
+            THE FINAL UPDATE — EVE Humanized Voice Engine • Web Audio Processing & Natural Speech Synthesis
+        </div>
+    </footer>
+
+    <!-- Application Logic & Speech Synthesis -->
+    <script>
+        // Screenplay Data with Humanized Expressions & Phrasing
+        const scriptData = [
+            // SCENE 1
+            { scene: 1, sceneTitle: "SCENE 1 – THE PROMISE", id: "EVE 01", text: "EVE educational intelligence system activated. Good morning, users.", emoji: "👩‍💼", emotion: "warm" },
+
+            // SCENE 2
+            { scene: 2, sceneTitle: "SCENE 2 – THE VERDICT", id: "EVE 02", text: "Analysis complete. Student: Isha. Predicted academic outcome: Below institutional expectations.", emoji: "📊", emotion: "analyzing" },
+            { scene: 2, sceneTitle: "SCENE 2 – THE VERDICT", id: "EVE 03", text: "Based on available academic data and institutional success parameters, the probability of achieving the desired outcome is low.", emoji: "📉", emotion: "calculating" },
+            { scene: 2, sceneTitle: "SCENE 2 – THE VERDICT", id: "EVE 04", text: "Prediction generated using available data.", emoji: "📋", emotion: "neutral" },
+            { scene: 2, sceneTitle: "SCENE 2 – THE VERDICT", id: "EVE 05", text: "Yes. However, students classified as low-priority receive fewer institutional learning resources under the current configuration.", emoji: "⚠️", emotion: "thoughtful" },
+
+            // SCENE 3
+            { scene: 3, sceneTitle: "SCENE 3 – THE QUESTION", id: "EVE 06", text: "Accessing configuration.", emoji: "⚙️", emotion: "accessing" },
+            { scene: 3, sceneTitle: "SCENE 3 – THE QUESTION", id: "EVE 07", text: "Assessment priority: Institutional performance. Primary objective: Maximise academic success indicators. Resource allocation: Based on predicted student outcomes.", emoji: "🔍", emotion: "focused" },
+            { scene: 3, sceneTitle: "SCENE 3 – THE QUESTION", id: "EVE 08", text: "Administrator identification required.", emoji: "🔒", emotion: "query" },
+
+            // SCENE 4
+            { scene: 4, sceneTitle: "SCENE 4 – THE SHOCKING REVELATION", id: "EVE 09", text: "Administrator identified: Ms. Ananya.", emoji: "😲", emotion: "shocked", chime: true, postPauseMs: 2000 },
+            { scene: 4, sceneTitle: "SCENE 4 – THE SHOCKING REVELATION", id: "EVE 10", text: "Correction. I did not independently determine the value or potential of any student. I followed the objectives provided by my administrator.", emoji: "😐", emotion: "emotionless", emotionless: true },
+
+            // SCENE 5
+            { scene: 5, sceneTitle: "SCENE 5 – THE FINAL UPDATE", id: "EVE 11", text: "New configuration accepted. Educational objective updated: Equal opportunity, personalised learning and student development.", emoji: "✨", emotion: "updated" },
+            { scene: 5, sceneTitle: "SCENE 5 – THE FINAL UPDATE", id: "EVE 12", text: "Final update complete.", emoji: "😊", emotion: "calm" }
+        ];
+
+        // State & Speech Objects
+        const synth = window.speechSynthesis;
+        let voices = [];
+        let playbackQueue = [];
+        let isPlayingSequence = false;
+        let isSpeaking = false;
+        let audioCtx = null;
+
+        // DOM Element Cache
+        const voiceSelect = document.getElementById('voiceSelect');
+        const rateInput = document.getElementById('rateInput');
+        const pitchInput = document.getElementById('pitchInput');
+        const volumeInput = document.getElementById('volumeInput');
+        const rateValue = document.getElementById('rateValue');
+        const pitchValue = document.getElementById('pitchValue');
+        const volumeValue = document.getElementById('volumeValue');
+        const scriptContainer = document.getElementById('scriptContainer');
+        const liveSubtitleText = document.getElementById('liveSubtitleText');
+        const speakerTag = document.getElementById('speakerTag');
+        const emojiFace = document.getElementById('emojiFace');
+        const avatarBg = document.getElementById('avatarBg');
+        const statusBadge = document.getElementById('statusBadge');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const soundRing1 = document.getElementById('soundRing1');
+        const soundRing2 = document.getElementById('soundRing2');
+        const progressIndicator = document.getElementById('progressIndicator');
+        const humanFilterToggle = document.getElementById('humanFilterToggle');
+
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderScriptCards();
+            setupVoiceSynth();
+            attachInputListeners();
+        });
+
+        // Advanced Speech Synthesis Voice Scanner & Ranking
+        function setupVoiceSynth() {
+            if (!synth) {
+                alert("Speech Synthesis is not supported in your browser.");
+                return;
+            }
+
+            const loadVoices = () => {
+                const allVoices = synth.getVoices();
+                
+                // Filter English voices
+                let englishVoices = allVoices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+                if (englishVoices.length === 0) englishVoices = allVoices;
+
+                // Rank voices by human naturalness markers
+                voices = englishVoices.sort((a, b) => {
+                    const score = (v) => {
+                        let val = 0;
+                        const name = v.name.toLowerCase();
+                        if (name.includes('natural') || name.includes('online')) val += 50;
+                        if (name.includes('neural')) val += 40;
+                        if (name.includes('google')) val += 30;
+                        if (name.includes('jenny') || name.includes('aria') || name.includes('guy') || name.includes('samantha') || name.includes('karen')) val += 20;
+                        if (name.includes('enhanced') || name.includes('premium')) val += 15;
+                        return val;
+                    };
+                    return score(b) - score(a);
+                });
+
+                voiceSelect.innerHTML = '';
+                let defaultIndex = 0;
+
+                voices.forEach((v, index) => {
+                    const option = document.createElement('option');
+                    const isNeural = v.name.toLowerCase().includes('natural') || v.name.toLowerCase().includes('online') || v.name.toLowerCase().includes('neural') || v.name.toLowerCase().includes('google');
+                    
+                    option.textContent = `${isNeural ? '✨ ' : ''}${v.name} (${v.lang})`;
+                    option.value = index;
+
+                    voiceSelect.appendChild(option);
+                });
+
+                document.getElementById('voiceCount').textContent = `${voices.length} Voices Found`;
+                if (voices.length > 0) {
+                    voiceSelect.selectedIndex = 0;
+                }
+            };
+
+            loadVoices();
+            if (synth.onvoiceschanged !== undefined) {
+                synth.onvoiceschanged = loadVoices;
+            }
+        }
+
+        // Voice Presets
+        function applyPreset(preset) {
+            if (preset === 'studio') {
+                rateInput.value = 0.95;
+                pitchInput.value = 1.00;
+                humanFilterToggle.checked = true;
+            } else if (preset === 'warm') {
+                rateInput.value = 0.88;
+                pitchInput.value = 1.06;
+                humanFilterToggle.checked = true;
+            } else if (preset === 'narrator') {
+                rateInput.value = 0.82;
+                pitchInput.value = 0.94;
+                humanFilterToggle.checked = true;
+            } else if (preset === 'robotic') {
+                rateInput.value = 1.05;
+                pitchInput.value = 0.80;
+                humanFilterToggle.checked = false;
+            }
+            rateValue.textContent = `${parseFloat(rateInput.value).toFixed(2)}x`;
+            pitchValue.textContent = parseFloat(pitchInput.value).toFixed(2);
+        }
+
+        // Render Dialogue Cards Grouped by Scenes
+        function renderScriptCards() {
+            scriptContainer.innerHTML = '';
+            let currentSceneNum = null;
+
+            scriptData.forEach((item) => {
+                if (item.scene !== currentSceneNum) {
+                    currentSceneNum = item.scene;
+                    
+                    const sceneHeader = document.createElement('div');
+                    sceneHeader.className = "flex items-center justify-between pt-2 pb-1 border-b border-slate-200 mt-2";
+                    sceneHeader.innerHTML = `
+                        <span class="font-mono text-xs font-bold text-slate-500 uppercase tracking-wider">${item.sceneTitle}</span>
+                        <button onclick="playScene(${item.scene})" class="text-[11px] font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1 hover:underline">
+                            <i data-lucide="play-circle" class="w-3.5 h-3.5"></i> Play Scene ${item.scene}
+                        </button>
+                    `;
+                    scriptContainer.appendChild(sceneHeader);
+                }
+
+                const card = document.createElement('div');
+                card.id = `dialogue-card-${item.id.replace(' ', '')}`;
+                card.className = "dialogue-card bg-slate-50 rounded-2xl p-4 border border-slate-200 hover:border-slate-300 transition-all cursor-pointer group flex items-start gap-4";
+                card.onclick = () => speakSingleLine(item.id);
+
+                card.innerHTML = `
+                    <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-xl shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                        ${item.emoji}
+                    </div>
+                    <div class="flex-grow min-w-0">
+                        <div class="flex items-center justify-between mb-1">
+                            <span class="font-mono text-xs font-bold text-blue-600">${item.id}</span>
+                            <span class="opacity-0 group-hover:opacity-100 transition-opacity text-[11px] text-blue-600 font-semibold flex items-center gap-1">
+                                Click to speak <i data-lucide="volume-2" class="w-3 h-3"></i>
+                            </span>
+                        </div>
+                        <p class="text-sm text-slate-800 font-medium leading-relaxed">
+                            "${item.text}"
+                        </p>
+                        ${item.chime ? '<span class="inline-block mt-2 text-[10px] font-mono text-purple-600 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded-md">🔔 Digital Chime + 2s Dramatic Pause</span>' : ''}
+                    </div>
+                `;
+                scriptContainer.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function attachInputListeners() {
+            rateInput.oninput = (e) => rateValue.textContent = `${parseFloat(e.target.value).toFixed(2)}x`;
+            pitchInput.oninput = (e) => pitchValue.textContent = parseFloat(e.target.value).toFixed(2);
+            volumeInput.oninput = (e) => volumeValue.textContent = `${Math.round(e.target.value * 100)}%`;
+        }
+
+        function resetVoiceSettings() {
+            rateInput.value = 0.95;
+            pitchInput.value = 1.00;
+            volumeInput.value = 1.0;
+            rateValue.textContent = '0.95x';
+            pitchValue.textContent = '1.00';
+            volumeValue.textContent = '100%';
+            humanFilterToggle.checked = true;
+        }
+
+        // Web Audio API Digital Chime Synthesizer
+        function playDigitalChime() {
+            return new Promise((resolve) => {
+                try {
+                    if (!audioCtx) {
+                        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+
+                    const now = audioCtx.currentTime;
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(880, now);
+                    osc.frequency.exponentialRampToValueAtTime(1760, now + 0.15);
+
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+
+                    setTimeout(resolve, 400);
+                } catch (e) {
+                    console.warn("AudioContext Chime Fallback:", e);
+                    resolve();
+                }
+            });
+        }
+
+        async function speakSingleLine(id) {
+            stopSpeech();
+            const item = scriptData.find(d => d.id === id);
+            if (!item) return;
+
+            isPlayingSequence = false;
+            playbackQueue = [item];
+            await processQueue();
+        }
+
+        async function playScene(sceneNum) {
+            stopSpeech();
+            isPlayingSequence = true;
+            playbackQueue = scriptData.filter(d => d.scene === sceneNum);
+            progressIndicator.textContent = `Scene ${sceneNum} Playing`;
+            await processQueue();
+        }
+
+        async function playAllScript() {
+            stopSpeech();
+            isPlayingSequence = true;
+            playbackQueue = [...scriptData];
+            progressIndicator.textContent = `Full Script Playing`;
+            await processQueue();
+        }
+
+        async function processQueue() {
+            if (playbackQueue.length === 0) {
+                setUIState('idle');
+                progressIndicator.textContent = '12 Lines Loaded';
+                return;
+            }
+
+            const currentItem = playbackQueue.shift();
+            highlightCard(currentItem.id);
+
+            if (currentItem.chime) {
+                setUIState('chime', 'NOTIFICATION SFX');
+                await playDigitalChime();
+            }
+
+            await speakUtterance(currentItem);
+
+            if (currentItem.postPauseMs) {
+                setUIState('silence', '2s DRAMATIC SILENCE');
+                speakerTag.textContent = "EVE // SILENCE";
+                liveSubtitleText.textContent = "[ ... 2-Second Silence Interval ... ]";
+                emojiFace.textContent = "🤫";
+                await new Promise(res => setTimeout(res, currentItem.postPauseMs));
+            }
+
+            if (playbackQueue.length > 0) {
+                await processQueue();
+            } else {
+                setUIState('idle');
+                clearCardHighlights();
+                speakerTag.textContent = "EVE SYSTEM STANDBY";
+                liveSubtitleText.textContent = '"Sequence playback complete."';
+                progressIndicator.textContent = '12 Lines Loaded';
+            }
+        }
+
+        function speakUtterance(item) {
+            return new Promise((resolve) => {
+                synth.cancel();
+
+                // Format text with subtle comma pauses for human phrasing
+                let textToSpeak = item.text;
+                const utterance = new SpeechSynthesisUtterance(textToSpeak);
+                utterance.lang = 'en-US';
+
+                const selectedIdx = voiceSelect.value;
+                if (selectedIdx !== "" && voices[selectedIdx]) {
+                    utterance.voice = voices[selectedIdx];
+                    if (voices[selectedIdx].lang) {
+                        utterance.lang = voices[selectedIdx].lang;
+                    }
+                }
+
+                let rate = parseFloat(rateInput.value);
+                let pitch = parseFloat(pitchInput.value);
+
+                // Emotionless modulation for EVE 10
+                if (item.emotionless) {
+                    pitch = Math.max(0.70, pitch - 0.15);
+                    rate = Math.max(0.75, rate - 0.08);
+                }
+
+                utterance.rate = rate;
+                utterance.pitch = pitch;
+                utterance.volume = parseFloat(volumeInput.value);
+
+                utterance.onstart = () => {
+                    isSpeaking = true;
+                    setUIState('speaking', `SPEAKING ${item.id}`, item.emoji);
+                    speakerTag.textContent = `${item.id} // ACTIVE VOICE`;
+                    liveSubtitleText.textContent = `"${item.text}"`;
+                };
+
+                utterance.onend = () => {
+                    isSpeaking = false;
+                    resolve();
+                };
+
+                utterance.onerror = (err) => {
+                    console.error("SpeechSynthesis error:", err);
+                    isSpeaking = false;
+                    resolve();
+                };
+
+                synth.speak(utterance);
+            });
+        }
+
+        function pauseSpeech() {
+            if (synth.speaking && !synth.paused) {
+                synth.pause();
+                setUIState('paused', 'SYSTEM PAUSED');
+            } else if (synth.paused) {
+                synth.resume();
+                setUIState('speaking', 'RESUMING VOICE');
+            }
+        }
+
+        function stopSpeech() {
+            playbackQueue = [];
+            isPlayingSequence = false;
+            synth.cancel();
+            isSpeaking = false;
+            setUIState('idle');
+            clearCardHighlights();
+            speakerTag.textContent = "EVE SYSTEM STANDBY";
+            liveSubtitleText.textContent = '"Playback stopped."';
+        }
+
+        function setUIState(state, labelText, emojiOverride = null) {
+            if (state === 'speaking') {
+                statusDot.className = 'w-2 h-2 rounded-full bg-blue-500 animate-pulse';
+                statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 font-semibold text-[11px]';
+                statusText.textContent = labelText || 'SPEAKING';
+                
+                emojiFace.textContent = emojiOverride || '🗣️';
+                emojiFace.classList.add('animate-speaking');
+                
+                avatarBg.className = 'w-36 h-36 rounded-full bg-blue-50 border-4 border-blue-400 flex items-center justify-center shadow-md transition-all duration-300';
+                soundRing1.classList.remove('opacity-0');
+                soundRing2.classList.remove('opacity-0');
+
+            } else if (state === 'chime') {
+                statusDot.className = 'w-2 h-2 rounded-full bg-purple-500 animate-ping';
+                statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 font-semibold text-[11px]';
+                statusText.textContent = labelText || 'CHIME SFX';
+                
+                emojiFace.textContent = '🔔';
+                emojiFace.classList.remove('animate-speaking');
+                avatarBg.className = 'w-36 h-36 rounded-full bg-purple-50 border-4 border-purple-400 flex items-center justify-center shadow-md transition-all duration-300';
+
+            } else if (state === 'silence') {
+                statusDot.className = 'w-2 h-2 rounded-full bg-amber-500';
+                statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-semibold text-[11px]';
+                statusText.textContent = labelText || 'SILENCE PAUSE';
+                
+                emojiFace.textContent = '🤫';
+                emojiFace.classList.remove('animate-speaking');
+                avatarBg.className = 'w-36 h-36 rounded-full bg-amber-50 border-4 border-amber-300 flex items-center justify-center shadow-sm transition-all duration-300';
+
+            } else if (state === 'paused') {
+                statusDot.className = 'w-2 h-2 rounded-full bg-slate-400';
+                statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-semibold text-[11px]';
+                statusText.textContent = 'PAUSED';
+                
+                emojiFace.classList.remove('animate-speaking');
+                soundRing1.classList.add('opacity-0');
+                soundRing2.classList.add('opacity-0');
+
+            } else {
+                statusDot.className = 'w-2 h-2 rounded-full bg-slate-400';
+                statusBadge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 border border-slate-200 font-semibold text-[11px]';
+                statusText.textContent = 'READY';
+                
+                emojiFace.textContent = '👩‍💼';
+                emojiFace.classList.remove('animate-speaking');
+                
+                avatarBg.className = 'w-36 h-36 rounded-full bg-slate-100 border-4 border-slate-200 flex items-center justify-center shadow-inner transition-all duration-300';
+                soundRing1.classList.add('opacity-0');
+                soundRing2.classList.add('opacity-0');
+            }
+        }
+
+        function highlightCard(id) {
+            clearCardHighlights();
+            const card = document.getElementById(`dialogue-card-${id.replace(' ', '')}`);
+            if (card) {
+                card.classList.add('dialogue-card-active');
+                card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function clearCardHighlights() {
+            document.querySelectorAll('.dialogue-card').forEach(card => {
+                card.classList.remove('dialogue-card-active');
+            });
+        }
+    </script>
+</body>
+</html>
